@@ -17,7 +17,10 @@ bitacoraApi.interceptors.request.use(
     }
 );
 
+// ==================== FUNCIONES PARA BITACORA ====================
+
 /**@returns {Promise} */
+
 export const getAllBitacora = async () => {
     try{
         const response = await bitacoraApi.get('bitacoras/'); 
@@ -27,3 +30,5 @@ export const getAllBitacora = async () => {
         throw error;
     }
 };
+
+export default bitacoraApi;

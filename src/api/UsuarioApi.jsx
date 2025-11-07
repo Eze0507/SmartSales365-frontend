@@ -17,3 +17,71 @@ usuarioApi.interceptors.request.use(
     }
 );
 // ==================== FUNCIONES PARA USUARIOS ====================
+
+/**@returns {Promise} */
+
+export const getAllUsuarios = async () => {
+    try{
+        const response = await usuarioApi.get('users/');
+        return response.data;
+    }catch(error){
+        console.error('Error al obtener todos los registros de usuario', error);
+        throw error;
+    }
+};
+
+/**@returns {Promise} */
+/**@param {Number} id */
+
+export const getUsuario = async (id) => {
+    try{
+        const response = await usuarioApi.get(`users/${id}/`);
+        return response.data; 
+    }catch(error){
+        console.error(`Error al obtener el usuario ${id}: `, error);
+        throw error;
+    }
+};
+
+/**@returns {Promise} */
+/**@param {Object} usuarioData */
+
+export const createUsuario = async (usuarioData) => {
+    try{
+        const response = await usuarioApi.post('users/', usuarioData);
+        return response.data;
+    }catch(error){
+        console.error('Error al crear el usuario', error);
+        throw error;
+    }
+};
+
+/**@returns {Promise} */
+/**@param {Number} id */
+/**@param {Object} usuarioData */
+
+export const updateUsuario = async (id, usuarioData) => {
+    try{
+        const response = await usuarioApi.put(`users/${id}/`, usuarioData);
+        return response.data;
+    }catch(error){
+        console.error(`Error al editar el usuario ${id}: `, error);
+        throw error;
+    }
+}
+
+/**@returns {Promise} */
+/**@param {Nmuber} id */
+
+export const deleteUsuario = async (id) => {
+    try{
+        const response = await usuarioApi.delete(`users/${id}/`);
+        return response.data;
+    }catch(error){
+        console.error(`Error al eliminar el usuario ${id}: `, error);
+        throw error;
+    }
+}
+
+export default usuarioApi;
+

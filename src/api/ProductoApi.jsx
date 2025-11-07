@@ -17,7 +17,10 @@ productoApi.interceptors.request.use(
     }
 );
 
+// ==================== FUNCIONES PARA PRODUCTOS ====================
+
 /**@returns {Promise} */
+
 export const getAllProductos = async () => {
     try{
         const response = await productoApi.get('productos/');
@@ -30,6 +33,7 @@ export const getAllProductos = async () => {
 
 /**@param {number} id */
 /**@returns {Promise} */
+
 export const deleteProducto = async (id) => {
     try{
         const response = await productoApi.delete(`productos/${id}/`);
@@ -42,6 +46,7 @@ export const deleteProducto = async (id) => {
 
 /**@param {Object} productoData */
 /**@returns {Promise} */
+
 export const createProducto = async (productoData) => {
     try{
         const response = productoApi.post('productos/', productoData);
@@ -66,3 +71,17 @@ export const updateProducto = async (id, productoData) => {
     }
 }
 
+/**@returns {Promise} */
+/**@param {Number} id */
+
+export const getProducto = async (id) => {
+    try{
+        const response = await productoApi.get(`productos/${id}/`);
+        return response.data;
+    }catch(error){
+        console.error(`Error al obtener el producto ${id}: `, error);
+        throw error;
+    }
+};
+
+export default productoApi;
