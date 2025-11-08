@@ -1,10 +1,10 @@
 import React from 'react';
 import {Outlet} from 'react-router-dom';
-import SideBar from './Sidebar.jsx'
+import SideBar from '../components/Sidebar.jsx'
 
 function AdminLayout(){
     return(
-        <div className = "flex h-screen bg-gray-100">
+        <div className = "flex h-screen bg-gray-100 overflow-hidden" >
             <SideBar />
             <div className = "flex flex-1 flex-col">
                 <header className="flex h-16 items-center bg-white px-8 shadow-md">

@@ -25,7 +25,7 @@ const navData = [
     submodules: [
       { name: 'Usuario', to: '/admin/usuarios' },
       { name: 'Bitacora', to: '/admin/bitacora' },
-      { name: 'Rol', to: '/admin/roles' },
+      { name: 'Rol', to: '/roles' },
     ]
   },
   { 
