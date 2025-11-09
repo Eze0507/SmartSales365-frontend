@@ -58,11 +58,15 @@ export const deleteCatalogo = async (id) => {
 };
 
 /**@returns {Promise} */
-/**@param {Object} catalogoData */
+/**@param {FormData} catalogoData - FormData con los datos del catálogo (el backend maneja la subida de imagen) */
 
 export const createCatalogo = async (catalogoData) => {
     try{
-        const response = await catalogoApi.post('catalogo/', catalogoData);
+        const response = await catalogoApi.post('catalogo/', catalogoData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return response.data;
     }catch(error){
         console.error('Error al crear el catalogo', error);
@@ -72,11 +76,15 @@ export const createCatalogo = async (catalogoData) => {
 
 /**@returns {Promise} */
 /**@param {Number} id */
-/**@param {Object} catalogoData */
+/**@param {FormData} catalogoData - FormData con los datos del catálogo (el backend maneja la subida de imagen) */
 
 export const updateCatalogo = async (id, catalogoData) => {
     try{
-        const response = await catalogoApi.put(`catalogo/${id}/`, catalogoData);
+        const response = await catalogoApi.put(`catalogo/${id}/`, catalogoData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return response.data;
     }catch(error){
         console.error(`Error al actualizar el catalogo ${id}: `, error);

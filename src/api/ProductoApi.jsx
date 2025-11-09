@@ -63,10 +63,10 @@ export const createProducto = async (productoData) => {
 
 export const updateProducto = async (id, productoData) => {
     try{
-        const response = await productoApi.put(`productos/${id}`, productoData);
+        const response = await productoApi.put(`productos/${id}/`, productoData);
         return response.data;
     }catch (error) {
-        console.error(`Error al actualizar el producto ${id}:`, error)
+        console.error(`Error al actualizar el producto ${id}:`, error);
         throw error;
     }
 }

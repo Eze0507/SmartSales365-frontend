@@ -23,8 +23,8 @@ const navData = [
     icon: <FaUsersCog size={20} />, 
     to: '/admin', // Link principal para vista contraída
     submodules: [
-      { name: 'Usuario', to: '/admin/usuarios' },
-      { name: 'Bitacora', to: '/admin/bitacora' },
+      { name: 'Usuario', to: '/usuarios' },
+      { name: 'Bitacora', to: '/bitacora' },
       { name: 'Rol', to: '/roles' },
     ]
   },
@@ -33,7 +33,7 @@ const navData = [
     icon: <FaShoppingCart size={20} />, 
     to: '/ventas',
     submodules: [
-      { name: 'Cliente', to: '/ventas/clientes' },
+      { name: 'Cliente', to: '/clientes' },
       { name: 'Venta', to: '/ventas/nueva' },
     ]
   },
@@ -42,9 +42,9 @@ const navData = [
     icon: <FaBoxOpen size={20} />, 
     to: '/catalogo',
     submodules: [
-      { name: 'Producto', to: '/catalogo/productos' },
-      { name: 'Catalogo', to: '/catalogo/catalogos' }, // Como lo pediste
-      { name: 'Garantia', to: '/catalogo/garantias' },
+      { name: 'Producto', to: '/productos' },
+      { name: 'Catalogo', to: '/catalogos' }, // Como lo pediste
+      { name: 'Garantia', to: '/garantias' },
     ]
   },
   { 
