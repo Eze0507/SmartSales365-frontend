@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import CartSidebar from '../CartSidebar';
 import VoiceAssistant from '../VoiceAssistant';
 
@@ -10,6 +11,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { getItemCount } = useCart();
+  const { user, isAuthenticated, openLoginModal, openRegisterModal, logout } = useAuth();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -77,10 +79,38 @@ const Header = () => {
               </button>
 
               <div className="sm:flex sm:gap-4">
-                <a className="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-teal-700 transition" href="#">Login</a>
-                <div className="hidden sm:flex">
-                  <a className="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600 hover:text-teal-600/75 transition" href="#">Register</a>
-                </div>
+                {isAuthenticated ? (
+                  // Usuario autenticado
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 text-gray-700">
+                      <FaUser className="text-teal-600" />
+                      <span className="hidden sm:inline font-medium">{user?.username}</span>
+                    </div>
+                    <button
+                      onClick={logout}
+                      className="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-red-700 transition"
+                    >
+                      <FaSignOutAlt />
+                      <span className="hidden sm:inline">Cerrar Sesión</span>
+                    </button>
+                  </div>
+                ) : (
+                  // Usuario no autenticado
+                  <>
+                    <button
+                      onClick={openLoginModal}
+                      className="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-teal-700 transition"
+                    >
+                      Login
+                    </button>
+                    <button
+                      onClick={openRegisterModal}
+                      className="hidden sm:flex rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600 hover:text-teal-600/75 transition"
+                    >
+                      Register
+                    </button>
+                  </>
+                )}
               </div>
 
               <div className="block md:hidden">
