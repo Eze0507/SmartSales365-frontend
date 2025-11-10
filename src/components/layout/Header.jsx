@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import CartSidebar from '../CartSidebar';
+import VoiceAssistant from '../VoiceAssistant';
 
 const Header = () => {
   // Estado para controlar la visibilidad del menú móvil
@@ -58,6 +59,9 @@ const Header = () => {
             </nav>
 
             <div className="flex items-center gap-4">
+              {/* Asistente de voz */}
+              <VoiceAssistant />
+
               {/* Botón del carrito */}
               <button
                 onClick={toggleCart}
