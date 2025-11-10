@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaShoppingCart } from 'react-icons/fa';
+import { useCart } from '../../context/CartContext';
+import CartSidebar from '../CartSidebar';
 
 const Header = () => {
   // Estado para controlar la visibilidad del menú móvil
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { getItemCount } = useCart();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const toggleCart = () => {
+    setIsCartOpen(!isCartOpen);
   };
 
   return (
@@ -28,22 +37,41 @@ const Header = () => {
               <ul className="flex items-center gap-6 text-sm">
                 <li>
                     <Link 
+                        className="text-gray-700 font-semibold transition hover:text-blue-600" 
+                        to="/"
+                    >
+                        Inicio
+                    </Link>
+                </li>
+                <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">Ofertas</a></li>
+                <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">Nosotros</a></li>
+                <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">Contacto</a></li>
+                <li>
+                    <Link 
                         className="rounded-md bg-yellow-100 px-3 py-1.5 text-sm font-medium text-yellow-700 hover:bg-yellow-200 transition" 
                         to="/dashboard"
                     >
                         Admin Panel
                     </Link>
                 </li>
-                <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">About</a></li>
-                <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">Careers</a></li>
-                <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">History</a></li>
-                <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">Services</a></li>
-                <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">Projects</a></li>
-                <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">Blog</a></li>
               </ul>
             </nav>
 
             <div className="flex items-center gap-4">
+              {/* Botón del carrito */}
+              <button
+                onClick={toggleCart}
+                className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors"
+                aria-label="Carrito de compras"
+              >
+                <FaShoppingCart size={24} />
+                {getItemCount() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {getItemCount()}
+                  </span>
+                )}
+              </button>
+
               <div className="sm:flex sm:gap-4">
                 <a className="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-teal-700 transition" href="#">Login</a>
                 <div className="hidden sm:flex">
@@ -71,17 +99,35 @@ const Header = () => {
             <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
              <nav aria-label="Global">
                 <ul className="flex flex-col gap-4 text-sm">
-                  <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">About</a></li>
-                  <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">Careers</a></li>
-                  <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">History</a></li>
-                  <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">Services</a></li>
-                  <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">Projects</a></li>
-                  <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">Blog</a></li>
+                  <li>
+                    <Link className="text-gray-700 font-semibold transition hover:text-blue-600 block" to="/">
+                      Inicio
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="text-gray-700 font-semibold transition hover:text-blue-600 block" to="/catalogo">
+                      Catálogo
+                    </Link>
+                  </li>
+                  <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">Ofertas</a></li>
+                  <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">Nosotros</a></li>
+                  <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">Contacto</a></li>
+                  <li>
+                    <Link 
+                        className="rounded-md bg-yellow-100 px-3 py-1.5 text-sm font-medium text-yellow-700 hover:bg-yellow-200 transition inline-block" 
+                        to="/dashboard"
+                    >
+                        Admin Panel
+                    </Link>
+                  </li>
                 </ul>
               </nav>
             </div>
          )}
       </div>
+
+      {/* Cart Sidebar */}
+      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   );
 };

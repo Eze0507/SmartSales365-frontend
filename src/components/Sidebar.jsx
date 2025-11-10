@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   FaTachometerAlt, 
   FaUsersCog, 
@@ -59,6 +60,7 @@ const navData = [
 ];
 
 function Sidebar() {
+  const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(true);
   
   // 2. NUEVO ESTADO PARA SUBMENÚS
@@ -70,6 +72,17 @@ function Sidebar() {
     // Si hago clic en el que ya está abierto, lo cierro
     // Si hago clic en otro, abro ese y cierro el anterior
     setOpenSubmenu(openSubmenu === name ? '' : name);
+  };
+
+  // 4. FUNCIÓN PARA EXPANDIR SIDEBAR AL HACER CLIC EN ICONO CUANDO ESTÁ CONTRAÍDO
+  const handleIconClick = (item, e) => {
+    // Solo expandir si el item tiene submódulos
+    if (!isExpanded && item.submodules && item.submodules.length > 0) {
+      e.preventDefault(); // Prevenir navegación si tiene submódulos
+      setIsExpanded(true);
+      setOpenSubmenu(item.name);
+    }
+    // Si NO tiene submódulos, dejar que navegue normalmente sin expandir
   };
 
   return (
@@ -138,9 +151,9 @@ function Sidebar() {
                     </button>
                   ) : (
                     // Si NO tiene submenús (es un LINK)
-                    <a
-                      href={item.to}
-                      className="group flex items-center rounded-md p-3 text-gray-700 transition-colors duration-200 hover:bg-blue-50"
+                    <button
+                      onClick={() => navigate(item.to)}
+                      className="group flex items-center w-full rounded-md p-3 text-gray-700 transition-colors duration-200 hover:bg-blue-50"
                     >
                       <div className="text-gray-500 transition-colors group-hover:text-blue-600">
                         {item.icon}
@@ -148,22 +161,39 @@ function Sidebar() {
                       <span className="ml-4 whitespace-nowrap font-medium">
                         {item.name}
                       </span>
-                    </a>
+                    </button>
                   )
                 ) : (
-                  // -------- VISTA CONTRAÍDA (Todo es un LINK) --------
-                  <a
-                    href={item.to} // El link del padre
-                    className="group relative flex justify-center rounded-md p-3 text-gray-700 transition-colors duration-200 hover:bg-blue-50"
-                  >
-                    <div className="text-gray-500 transition-colors group-hover:text-blue-600">
-                      {item.icon}
-                    </div>
-                    {/* Tooltip para la vista contraída */}
-                    <span className="absolute left-full ml-4 w-auto min-w-max scale-0 rounded-md bg-gray-800 px-3 py-1 text-xs font-medium text-white shadow-md transition-all duration-300 group-hover:scale-100">
-                      {item.name}
-                    </span>
-                  </a>
+                  // -------- VISTA CONTRAÍDA --------
+                  hasSubmodules ? (
+                    // Si TIENE submenús, expandir el sidebar al hacer clic
+                    <button
+                      onClick={(e) => handleIconClick(item, e)}
+                      className="group relative flex justify-center rounded-md p-3 text-gray-700 transition-colors duration-200 hover:bg-blue-50"
+                    >
+                      <div className="text-gray-500 transition-colors group-hover:text-blue-600">
+                        {item.icon}
+                      </div>
+                      {/* Tooltip para la vista contraída */}
+                      <span className="absolute left-full ml-4 w-auto min-w-max scale-0 rounded-md bg-gray-800 px-3 py-1 text-xs font-medium text-white shadow-md transition-all duration-300 group-hover:scale-100">
+                        {item.name}
+                      </span>
+                    </button>
+                  ) : (
+                    // Si NO tiene submenús, es un link directo (no expande el sidebar)
+                    <button
+                      onClick={() => navigate(item.to)}
+                      className="group relative flex justify-center rounded-md p-3 text-gray-700 transition-colors duration-200 hover:bg-blue-50"
+                    >
+                      <div className="text-gray-500 transition-colors group-hover:text-blue-600">
+                        {item.icon}
+                      </div>
+                      {/* Tooltip para la vista contraída */}
+                      <span className="absolute left-full ml-4 w-auto min-w-max scale-0 rounded-md bg-gray-800 px-3 py-1 text-xs font-medium text-white shadow-md transition-all duration-300 group-hover:scale-100">
+                        {item.name}
+                      </span>
+                    </button>
+                  )
                 )}
 
                 {/* --- RENDERIZACIÓN DE SUBMÓDULOS --- */}
@@ -175,12 +205,12 @@ function Sidebar() {
                     {item.submodules.map((subItem) => (
                       <li key={subItem.name} className="pl-8"> 
                         {/* El 'pl-8' (padding-left) crea la sangría */}
-                        <a
-                          href={subItem.to}
-                          className="flex items-center rounded-md py-2 px-3 text-sm text-gray-600 transition-colors duration-200 hover:bg-blue-50 hover:text-blue-600"
+                        <button
+                          onClick={() => navigate(subItem.to)}
+                          className="flex items-center w-full text-left rounded-md py-2 px-3 text-sm text-gray-600 transition-colors duration-200 hover:bg-blue-50 hover:text-blue-600"
                         >
                           {subItem.name}
-                        </a>
+                        </button>
                       </li>
                     ))}
                   </ul>

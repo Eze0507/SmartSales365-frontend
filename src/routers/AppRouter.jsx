@@ -20,6 +20,8 @@ import ProductoDetail from '../pages/producto/ProductoDetail.jsx';
 import CatalogoList from '../pages/catalogo/CatalogoList.jsx';
 import CatalogoForm from '../pages/catalogo/CatalogoForm.jsx';
 import CatalogoDetail from '../pages/catalogo/CatalogoDetail.jsx';
+import ProductoCatalogo from '../pages/ecommerce/ProductoCatalogo.jsx';
+import ProductoDetalle from '../pages/ecommerce/ProductoDetalle.jsx';
 
 const AppRouter = () =>{
     return(
@@ -27,8 +29,9 @@ const AppRouter = () =>{
             <Routes>
                 {/* --- ZONA PÚBLICA (TIENDA) --- */}
                 <Route element={<EcommerceLayout />}>
-                    <Route path="/" element={<HomePage />}/>
-                    <Route path="/catalogo" element={<h1>Catálogo de Productos</h1>} />
+                    <Route path="/" element={<ProductoCatalogo />}/>
+                    <Route path="/catalogo" element={<ProductoCatalogo />} />
+                    <Route path="/producto/:id" element={<ProductoDetalle />} />
                 </Route>
                 {/* --- ZONA PRIVADA (ADMIN) --- */}
                 <Route element={<AdminLayout />}>
