@@ -90,7 +90,33 @@ const ProductoDetail = () => {
         </>
       ), 
       value: formatDate(producto.fecha_ingreso) 
-    }
+    },
+    ...(producto.fecha_venta ? [
+      { 
+        label: (
+          <>
+            <FaCalendar className="inline mr-2" />
+            Fecha de Venta
+          </>
+        ), 
+        value: formatDate(producto.fecha_venta) 
+      }
+    ] : []),
+    ...(producto.fecha_fin_garantia && producto.estado === 'vendido' ? [
+      { 
+        label: 'Garantía', 
+        value: (
+          <div>
+            <div className={`font-semibold ${producto.garantia_vigente ? 'text-green-600' : 'text-red-600'}`}>
+              {producto.garantia_vigente ? '✓ Vigente' : '✗ Vencida'}
+            </div>
+            <div className="text-sm text-gray-600">
+              Vence: {formatDate(producto.fecha_fin_garantia)}
+            </div>
+          </div>
+        )
+      }
+    ] : [])
   ] : [];
 
   // Información del catálogo
