@@ -1,15 +1,87 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { FaTimes, FaShoppingCart, FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
+import { FaTimes, FaShoppingCart, FaTrash, FaMinus, FaPlus, FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { checkoutCart } from '../api/CartApi';
 
 const CartSidebar = ({ isOpen, onClose }) => {
-    const { cart, updateQuantity, removeItem, getItemCount, getTotalPrice, loading } = useCart();
+    const { cart, updateQuantity, removeItem, getItemCount, getTotalPrice, loading, loadCart } = useCart();
+    const { user, isAuthenticated, openLoginModal } = useAuth();
     const navigate = useNavigate();
+    
+    const [checkoutLoading, setCheckoutLoading] = useState(false);
+    const [checkoutError, setCheckoutError] = useState('');
 
-    const handleCheckout = () => {
-        onClose();
-        navigate('/checkout');
+    const handleCheckout = async () => {
+        // Validar que el usuario esté autenticado
+        if (!isAuthenticated || !user) {
+            setCheckoutError('Debes iniciar sesión para realizar la compra');
+            onClose();
+            openLoginModal();
+            return;
+        }
+
+        // Validar que el usuario tenga un cliente_id
+        if (!user.cliente_id) {
+            setCheckoutError('Error: No se encontró información de cliente. Por favor contacte al soporte.');
+            return;
+        }
+
+        // Validar que el carrito tenga items
+        if (!cart || !cart.items || cart.items.length === 0) {
+            setCheckoutError('El carrito está vacío. Por favor agregue productos antes de continuar.');
+            return;
+        }
+
+        try {
+            setCheckoutLoading(true);
+            setCheckoutError('');
+            
+            console.log('DEBUG - Carrito antes del checkout:', {
+                items: cart.items.length,
+                total: cart.total_price,
+                cliente_id: user.cliente_id,
+                username: user.username,
+                items_detail: cart.items.map(i => ({ id: i.id, nombre: i.catalogo.nombre, qty: i.quantity }))
+            });
+            
+            // Crear venta desde el carrito usando el cliente_id del usuario autenticado
+            const venta = await checkoutCart({
+                cliente_id: user.cliente_id,
+                direccion: 'Dirección a confirmar',
+                impuesto: 0,
+                descuento: 0,
+                costo_envio: 100 // Costo de envío por defecto
+            });
+            
+            // NO recargar el carrito aquí - se vaciará cuando el pago sea exitoso
+            // Esto permite que el usuario vuelva si cancela el pago
+            
+            // Cerrar sidebar
+            onClose();
+            
+            // Redirigir a la página de pago con el ID de la venta creada
+            navigate(`/checkout/pago/${venta.id}`);
+            
+        } catch (error) {
+            console.error('Error en checkout:', error);
+            console.error('Error response:', error.response?.data);
+            
+            let errorMessage = 'Error al procesar el checkout. Por favor intente nuevamente.';
+            
+            if (error.response?.data?.error) {
+                errorMessage = error.response.data.error;
+            } else if (error.response?.data?.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            setCheckoutError(errorMessage);
+        } finally {
+            setCheckoutLoading(false);
+        }
     };
 
     const handleQuantityChange = async (itemId, currentQuantity, change) => {
@@ -158,14 +230,28 @@ const CartSidebar = ({ isOpen, onClose }) => {
                                 </span>
                             </div>
 
+                            {/* Error de checkout */}
+                            {checkoutError && (
+                                <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-sm mb-2">
+                                    {checkoutError}
+                                </div>
+                            )}
+
                             {/* Botones */}
                             <div className="space-y-2">
                                 <button
                                     onClick={handleCheckout}
-                                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                                    disabled={loading}
+                                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center"
+                                    disabled={loading || checkoutLoading}
                                 >
-                                    Proceder al pago
+                                    {checkoutLoading ? (
+                                        <>
+                                            <FaSpinner className="animate-spin mr-2" />
+                                            Procesando...
+                                        </>
+                                    ) : (
+                                        'Proceder al pago'
+                                    )}
                                 </button>
                                 <button
                                     onClick={onClose}

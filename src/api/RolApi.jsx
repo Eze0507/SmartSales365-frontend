@@ -44,7 +44,7 @@ rolApi.interceptors.response.use(
  */
 export const getAllRoles = async () => {
   try {
-    const response = await rolApi.get('roles/');
+    const response = await rolApi.get('administracion/roles/');
     return response.data;
   } catch (error) {
     console.error('Error al obtener roles:', error);
@@ -59,7 +59,7 @@ export const getAllRoles = async () => {
  */
 export const getRoleById = async (id) => {
   try {
-    const response = await rolApi.get(`roles/${id}/`);
+    const response = await rolApi.get(`administracion/roles/${id}/`);
     return response.data;
   } catch (error) {
     console.error(`Error al obtener rol ${id}:`, error);
@@ -76,7 +76,7 @@ export const getRoleById = async (id) => {
  */
 export const createRole = async (roleData) => {
   try {
-    const response = await rolApi.post('roles/', roleData);
+    const response = await rolApi.post('administracion/roles/', roleData);
     return response.data;
   } catch (error) {
     console.error('Error al crear rol:', error);
@@ -94,7 +94,7 @@ export const createRole = async (roleData) => {
  */
 export const updateRole = async (id, roleData) => {
   try {
-    const response = await rolApi.put(`roles/${id}/`, roleData);
+    const response = await rolApi.put(`administracion/roles/${id}/`, roleData);
     return response.data;
   } catch (error) {
     console.error(`Error al actualizar rol ${id}:`, error);
@@ -110,7 +110,7 @@ export const updateRole = async (id, roleData) => {
  */
 export const partialUpdateRole = async (id, roleData) => {
   try {
-    const response = await rolApi.patch(`roles/${id}/`, roleData);
+    const response = await rolApi.patch(`administracion/roles/${id}/`, roleData);
     return response.data;
   } catch (error) {
     console.error(`Error al actualizar parcialmente rol ${id}:`, error);
@@ -125,7 +125,7 @@ export const partialUpdateRole = async (id, roleData) => {
  */
 export const deleteRole = async (id) => {
   try {
-    const response = await rolApi.delete(`roles/${id}/`);
+    const response = await rolApi.delete(`administracion/roles/${id}/`);
     return response.data;
   } catch (error) {
     console.error(`Error al eliminar rol ${id}:`, error);
@@ -141,7 +141,7 @@ export const deleteRole = async (id) => {
  */
 export const getAllPermissions = async () => {
   try {
-    const response = await rolApi.get('permissions/');
+    const response = await rolApi.get('administracion/permissions/');
     return response.data;
   } catch (error) {
     console.error('Error al obtener permisos:', error);
@@ -156,7 +156,7 @@ export const getAllPermissions = async () => {
  */
 export const getPermissionById = async (id) => {
   try {
-    const response = await rolApi.get(`permissions/${id}/`);
+    const response = await rolApi.get(`administracion/permissions/${id}/`);
     return response.data;
   } catch (error) {
     console.error(`Error al obtener permiso ${id}:`, error);

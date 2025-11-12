@@ -35,7 +35,8 @@ const navData = [
     to: '/ventas',
     submodules: [
       { name: 'Cliente', to: '/clientes' },
-      { name: 'Venta', to: '/ventas/nueva' },
+      { name: 'Venta', to: '/dashboard/ventas' },
+      { name: 'Pagos', to: '/dashboard/pagos' },
     ]
   },
   { 

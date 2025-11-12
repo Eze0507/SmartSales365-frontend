@@ -22,7 +22,7 @@ usuarioApi.interceptors.request.use(
 
 export const getAllUsuarios = async () => {
     try{
-        const response = await usuarioApi.get('users/');
+        const response = await usuarioApi.get('administracion/users/');
         return response.data;
     }catch(error){
         console.error('Error al obtener todos los registros de usuario', error);
@@ -35,7 +35,7 @@ export const getAllUsuarios = async () => {
 
 export const getUsuario = async (id) => {
     try{
-        const response = await usuarioApi.get(`users/${id}/`);
+        const response = await usuarioApi.get(`administracion/users/${id}/`);
         return response.data; 
     }catch(error){
         console.error(`Error al obtener el usuario ${id}: `, error);
@@ -48,7 +48,7 @@ export const getUsuario = async (id) => {
 
 export const createUsuario = async (usuarioData) => {
     try{
-        const response = await usuarioApi.post('users/', usuarioData);
+        const response = await usuarioApi.post('administracion/users/', usuarioData);
         return response.data;
     }catch(error){
         console.error('Error al crear el usuario', error);
@@ -62,7 +62,7 @@ export const createUsuario = async (usuarioData) => {
 
 export const updateUsuario = async (id, usuarioData) => {
     try{
-        const response = await usuarioApi.put(`users/${id}/`, usuarioData);
+        const response = await usuarioApi.put(`administracion/users/${id}/`, usuarioData);
         return response.data;
     }catch(error){
         console.error(`Error al editar el usuario ${id}: `, error);
@@ -75,7 +75,7 @@ export const updateUsuario = async (id, usuarioData) => {
 
 export const deleteUsuario = async (id) => {
     try{
-        const response = await usuarioApi.delete(`users/${id}/`);
+        const response = await usuarioApi.delete(`administracion/users/${id}/`);
         return response.data;
     }catch(error){
         console.error(`Error al eliminar el usuario ${id}: `, error);

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaShoppingCart, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaShoppingCart, FaUser, FaSignOutAlt, FaHistory, FaUserCircle, FaUserEdit, FaChevronDown, FaLock } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import CartSidebar from '../CartSidebar';
@@ -10,8 +10,11 @@ const Header = () => {
   // Estado para controlar la visibilidad del menú móvil
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
   const { getItemCount } = useCart();
   const { user, isAuthenticated, openLoginModal, openRegisterModal, logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -19,6 +22,34 @@ const Header = () => {
 
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
+  };
+
+  const toggleProfileMenu = () => {
+    setIsProfileMenuOpen(!isProfileMenuOpen);
+  };
+
+  // Cerrar el menú de perfil al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    setIsProfileMenuOpen(false);
+    logout();
+  };
+
+  const handleNavigateProfile = (path) => {
+    setIsProfileMenuOpen(false);
+    navigate(path);
   };
 
   return (
@@ -49,20 +80,35 @@ const Header = () => {
                 <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">Ofertas</a></li>
                 <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">Nosotros</a></li>
                 <li><a className="text-gray-500 transition hover:text-gray-500/75" href="#">Contacto</a></li>
-                <li>
-                    <Link 
-                        className="rounded-md bg-yellow-100 px-3 py-1.5 text-sm font-medium text-yellow-700 hover:bg-yellow-200 transition" 
-                        to="/dashboard"
-                    >
-                        Admin Panel
-                    </Link>
-                </li>
+                {/* Mostrar Admin Panel solo si el usuario es administrador */}
+                {isAuthenticated && user?.is_staff && (
+                  <li>
+                      <Link 
+                          className="rounded-md bg-yellow-100 px-3 py-1.5 text-sm font-medium text-yellow-700 hover:bg-yellow-200 transition" 
+                          to="/dashboard"
+                      >
+                          Admin Panel
+                      </Link>
+                  </li>
+                )}
               </ul>
             </nav>
 
             <div className="flex items-center gap-4">
               {/* Asistente de voz */}
               <VoiceAssistant />
+
+              {/* Historial de pagos - Solo para usuarios autenticados NO admin */}
+              {isAuthenticated && !user?.is_staff && (
+                <button
+                  onClick={() => navigate('/mis-pagos')}
+                  className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors"
+                  aria-label="Historial de pagos"
+                  title="Mis pagos"
+                >
+                  <FaHistory size={22} />
+                </button>
+              )}
 
               {/* Botón del carrito */}
               <button
@@ -81,19 +127,84 @@ const Header = () => {
               <div className="sm:flex sm:gap-4">
                 {isAuthenticated ? (
                   // Usuario autenticado
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 text-gray-700">
-                      <FaUser className="text-teal-600" />
-                      <span className="hidden sm:inline font-medium">{user?.username}</span>
-                    </div>
-                    <button
-                      onClick={logout}
-                      className="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-red-700 transition"
-                    >
-                      <FaSignOutAlt />
-                      <span className="hidden sm:inline">Cerrar Sesión</span>
-                    </button>
-                  </div>
+                  <>
+                    {user?.is_staff ? (
+                      // Admin - Mostrar nombre y botón de cerrar sesión
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 text-gray-700">
+                          <FaUser className="text-teal-600" />
+                          <span className="hidden sm:inline font-medium">{user?.username}</span>
+                        </div>
+                        <button
+                          onClick={logout}
+                          className="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-red-700 transition"
+                        >
+                          <FaSignOutAlt />
+                          <span className="hidden sm:inline">Cerrar Sesión</span>
+                        </button>
+                      </div>
+                    ) : (
+                      // Cliente - Mostrar menú dropdown con avatar
+                      <div className="relative" ref={profileMenuRef}>
+                        <button
+                          onClick={toggleProfileMenu}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center text-white font-bold shadow-md">
+                            {user?.username?.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="hidden sm:inline font-medium text-gray-700">
+                            {user?.username}
+                          </span>
+                          <FaChevronDown className={`text-gray-600 transition-transform ${isProfileMenuOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        {isProfileMenuOpen && (
+                          <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                            <div className="px-4 py-3 border-b border-gray-200">
+                              <p className="text-sm font-semibold text-gray-800">{user?.username}</p>
+                              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                            </div>
+                            
+                            <button
+                              onClick={() => handleNavigateProfile('/mi-perfil')}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3 transition-colors"
+                            >
+                              <FaUserCircle className="text-blue-600" size={18} />
+                              <span>Ver perfil</span>
+                            </button>
+                            
+                            <button
+                              onClick={() => handleNavigateProfile('/editar-perfil')}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3 transition-colors"
+                            >
+                              <FaUserEdit className="text-green-600" size={18} />
+                              <span>Editar perfil</span>
+                            </button>
+                            
+                            <button
+                              onClick={() => handleNavigateProfile('/cambiar-contrasena')}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3 transition-colors"
+                            >
+                              <FaLock className="text-orange-600" size={18} />
+                              <span>Cambiar contraseña</span>
+                            </button>
+                            
+                            <div className="border-t border-gray-200 my-2"></div>
+                            
+                            <button
+                              onClick={handleLogout}
+                              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors"
+                            >
+                              <FaSignOutAlt size={18} />
+                              <span>Cerrar sesión</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
                 ) : (
                   // Usuario no autenticado
                   <>
@@ -146,14 +257,17 @@ const Header = () => {
                   <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">Ofertas</a></li>
                   <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">Nosotros</a></li>
                   <li><a className="text-gray-500 transition hover:text-gray-500/75 block" href="#">Contacto</a></li>
-                  <li>
-                    <Link 
-                        className="rounded-md bg-yellow-100 px-3 py-1.5 text-sm font-medium text-yellow-700 hover:bg-yellow-200 transition inline-block" 
-                        to="/dashboard"
-                    >
-                        Admin Panel
-                    </Link>
-                  </li>
+                  {/* Mostrar Admin Panel solo si el usuario es administrador */}
+                  {isAuthenticated && user?.is_staff && (
+                    <li>
+                      <Link 
+                          className="rounded-md bg-yellow-100 px-3 py-1.5 text-sm font-medium text-yellow-700 hover:bg-yellow-200 transition inline-block" 
+                          to="/dashboard"
+                      >
+                          Admin Panel
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               </nav>
             </div>

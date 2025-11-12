@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getMyCart, addItemToCart, updateCartItemQuantity, removeCartItem } from '../api/CartApi';
+import { getMyCart, addItemToCart, updateCartItemQuantity, removeCartItem, clearCart as clearCartApi } from '../api/CartApi';
 
 const CartContext = createContext();
 
@@ -29,9 +29,14 @@ export const CartProvider = ({ children }) => {
             setError(null);
         } catch (err) {
             console.error('Error al cargar el carrito:', err);
-            setError('Error al cargar el carrito');
-            // Inicializar carrito vacío si hay error
-            setCart({ items: [], total_price: 0 });
+            // Si no está autenticado (401), simplemente usar carrito vacío sin error
+            if (err.response?.status === 401) {
+                setCart({ items: [], total_price: 0 });
+                setError(null);
+            } else {
+                setError('Error al cargar el carrito');
+                setCart({ items: [], total_price: 0 });
+            }
         } finally {
             setLoading(false);
         }
@@ -46,6 +51,11 @@ export const CartProvider = ({ children }) => {
             return { success: true };
         } catch (err) {
             console.error('Error al agregar al carrito:', err);
+            // Mensaje específico para usuarios no autenticados
+            if (err.response?.status === 401) {
+                setError('Debes iniciar sesión para agregar productos al carrito');
+                return { success: false, error: err, needsLogin: true };
+            }
             setError('Error al agregar el producto');
             return { success: false, error: err };
         } finally {
@@ -81,6 +91,22 @@ export const CartProvider = ({ children }) => {
         }
     };
 
+    const clearCart = async () => {
+        try {
+            setLoading(true);
+            const data = await clearCartApi();
+            setCart(data.cart);
+            setError(null);
+            return { success: true };
+        } catch (err) {
+            console.error('Error al vaciar el carrito:', err);
+            setError('Error al vaciar el carrito');
+            return { success: false, error: err };
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const getItemCount = () => {
         if (!cart || !cart.items) return 0;
         return cart.items.reduce((total, item) => total + item.quantity, 0);
@@ -98,6 +124,7 @@ export const CartProvider = ({ children }) => {
         addItem,
         updateQuantity,
         removeItem,
+        clearCart,
         loadCart,
         getItemCount,
         getTotalPrice,

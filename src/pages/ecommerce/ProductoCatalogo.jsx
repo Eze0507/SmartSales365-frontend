@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllCatalogo } from '../../api/CatalogoApi';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import { FaSearch, FaShoppingCart } from 'react-icons/fa';
 
 const ProductoCatalogo = () => {
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { openLoginModal } = useAuth();
   const [catalogos, setCatalogos] = useState([]);
   const [filteredCatalogos, setFilteredCatalogos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -80,6 +82,10 @@ const ProductoCatalogo = () => {
     
     if (result.success) {
       alert(`✅ "${nombre}" agregado al carrito`);
+    } else if (result.needsLogin) {
+      // Usuario no autenticado
+      alert('⚠️ Debes iniciar sesión para agregar productos al carrito');
+      openLoginModal();
     } else {
       alert('❌ Error al agregar al carrito');
     }

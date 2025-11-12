@@ -23,7 +23,7 @@ clienteApi.interceptors.request.use(
 
 export const getAllClientes = async () => {
     try{
-        const response = await clienteApi.get('clientes/');
+        const response = await clienteApi.get('administracion/clientes/');
         return response.data;
     }catch(error){
         console.error('Error al obtener los registros de los clientes', error);
@@ -36,7 +36,7 @@ export const getAllClientes = async () => {
 
 export const getCliente = async (id) => {
     try{
-        const response = await clienteApi.get(`clientes/${id}/`);
+        const response = await clienteApi.get(`administracion/clientes/${id}/`);
         return response.data;
     }catch(error){
         console.error(`Error al obtener el cliente ${id}`, error);
@@ -49,7 +49,7 @@ export const getCliente = async (id) => {
 
 export const createCliente = async (clienteData) => {
     try{
-        const response = await clienteApi.post('clientes/', clienteData);
+        const response = await clienteApi.post('administracion/clientes/', clienteData);
         return response.data;
     }catch(error){
         console.error('Error al crear el cliente', error);
@@ -62,7 +62,7 @@ export const createCliente = async (clienteData) => {
 
 export const deleteCliente = async (id) => {
     try{
-        const response = await clienteApi.delete(`clientes/${id}/`);
+        const response = await clienteApi.delete(`administracion/clientes/${id}/`);
         return response.data;
     }catch(error){
         console.error(`Error al eliminar el cliente ${id}`, error);
@@ -76,7 +76,7 @@ export const deleteCliente = async (id) => {
 
 export const updateCliente = async (id, clienteData) => {
     try{
-        const response = await clienteApi.put(`clientes/${id}/`, clienteData);
+        const response = await clienteApi.put(`administracion/clientes/${id}/`, clienteData);
         return response.data;
     }catch(error){
         console.error(`Error al editar el cliente ${id}`, error);
@@ -86,7 +86,7 @@ export const updateCliente = async (id, clienteData) => {
 
 export const getAllCiudades = async () => {
     try{
-        const response = await clienteApi.get('ciudades/');
+        const response = await clienteApi.get('administracion/ciudades/');
         return response.data;
     }catch(error){
         console.error('Error al obtener los registros de las ciudades', error);
@@ -96,7 +96,7 @@ export const getAllCiudades = async () => {
 
 export const getAllDepartamentos = async () => {
     try{
-        const response = await clienteApi.get('departamentos/');
+        const response = await clienteApi.get('administracion/departamentos/');
         return response.data;
     }catch(error){
         console.error('Error al obtener los registros de los departamentos', error);

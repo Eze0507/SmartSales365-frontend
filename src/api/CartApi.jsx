@@ -84,4 +84,34 @@ export const removeCartItem = async (itemId) => {
     }
 };
 
+/**
+ * Crear una venta desde el carrito (checkout)
+ * @param {Object} data - { cliente_id: number, direccion: string, impuesto: number, descuento: number, costo_envio: number }
+ * @returns {Promise} - Venta creada
+ */
+export const checkoutCart = async (data) => {
+    try {
+        const response = await cartApi.post('cart/checkout/', data);
+        return response.data;
+    } catch (error) {
+        console.error('Error en checkout:', error);
+        throw error;
+    }
+};
+
+/**
+ * Vaciar el carrito completamente
+ * Se llama cuando el pago es exitoso
+ * @returns {Promise}
+ */
+export const clearCart = async () => {
+    try {
+        const response = await cartApi.post('cart/clear_cart/');
+        return response.data;
+    } catch (error) {
+        console.error('Error al vaciar el carrito:', error);
+        throw error;
+    }
+};
+
 export default cartApi;

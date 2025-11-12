@@ -26,7 +26,7 @@ ubicacionApi.interceptors.request.use(
 
 export const getAllDepartamentos = async () => {
     try{
-        const response = await ubicacionApi.get('departamentos/');
+        const response = await ubicacionApi.get('administracion/departamentos/');
         return response.data;
     }catch(error){
         console.error('Error al obtener los departamentos', error);
@@ -40,7 +40,7 @@ export const getAllDepartamentos = async () => {
 
 export const getAllCiudades = async () => {
     try{
-        const response = await ubicacionApi.get('ciudades/');
+        const response = await ubicacionApi.get('administracion/ciudades/');
         return response.data;
     }catch(error){
         console.error('Error al obtener las ciudades', error);
@@ -53,7 +53,7 @@ export const getAllCiudades = async () => {
 
 export const getCiudadesByDepartamento = async (departamentoId) => {
     try{
-        const response = await ubicacionApi.get(`ciudades/?departamento=${departamentoId}`);
+        const response = await ubicacionApi.get(`administracion/ciudades/?departamento=${departamentoId}`);
         return response.data;
     }catch(error){
         console.error(`Error al obtener las ciudades del departamento ${departamentoId}`, error);

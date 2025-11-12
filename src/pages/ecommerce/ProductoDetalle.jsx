@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCatalogo } from '../../api/CatalogoApi';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import { 
   FaShoppingCart, 
   FaArrowLeft, 
@@ -17,6 +18,7 @@ const ProductoDetalle = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { openLoginModal } = useAuth();
   const [producto, setProducto] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,6 +57,10 @@ const ProductoDetalle = () => {
     if (result.success) {
       alert(`✅ ${cantidad} unidad(es) de "${producto.nombre}" agregadas al carrito`);
       setCantidad(1); // Resetear cantidad
+    } else if (result.needsLogin) {
+      // Usuario no autenticado
+      alert('⚠️ Debes iniciar sesión para agregar productos al carrito');
+      openLoginModal();
     } else {
       alert('❌ Error al agregar al carrito. Por favor intenta nuevamente.');
     }

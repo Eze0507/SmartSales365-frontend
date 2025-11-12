@@ -23,7 +23,7 @@ bitacoraApi.interceptors.request.use(
 
 export const getAllBitacora = async () => {
     try{
-        const response = await bitacoraApi.get('bitacoras/'); 
+        const response = await bitacoraApi.get('administracion/bitacoras/'); 
         return response.data;
     }catch (error) {
         console.error('Error al obtener los registros de la bitacora', error);

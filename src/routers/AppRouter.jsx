@@ -22,6 +22,13 @@ import CatalogoForm from '../pages/catalogo/CatalogoForm.jsx';
 import CatalogoDetail from '../pages/catalogo/CatalogoDetail.jsx';
 import ProductoCatalogo from '../pages/ecommerce/ProductoCatalogo.jsx';
 import ProductoDetalle from '../pages/ecommerce/ProductoDetalle.jsx';
+import { VentaList, VentaDetail, VentaForm } from '../pages/venta';
+import { PagoCheckout, PagosList } from '../pages/pagos';
+import MisPagos from '../pages/pagos/MisPagos.jsx';
+import MiVentaDetail from '../pages/venta/MiVentaDetail.jsx';
+import MiPerfil from '../pages/cliente/MiPerfil.jsx';
+import EditarPerfil from '../pages/cliente/EditarPerfil.jsx';
+import CambiarContrasena from '../pages/cliente/CambiarContrasena.jsx';
 
 const AppRouter = () =>{
     return(
@@ -32,6 +39,12 @@ const AppRouter = () =>{
                     <Route path="/" element={<ProductoCatalogo />}/>
                     <Route path="/catalogo" element={<ProductoCatalogo />} />
                     <Route path="/producto/:id" element={<ProductoDetalle />} />
+                    <Route path="/checkout/pago/:ventaId" element={<PagoCheckout isEcommerce={true} />} />
+                    <Route path="/mis-pagos" element={<MisPagos />} />
+                    <Route path="/mis-ventas/:id" element={<MiVentaDetail />} />
+                    <Route path="/mi-perfil" element={<MiPerfil />} />
+                    <Route path="/editar-perfil" element={<EditarPerfil />} />
+                    <Route path="/cambiar-contrasena" element={<CambiarContrasena />} />
                 </Route>
                 {/* --- ZONA PRIVADA (ADMIN) --- */}
                 <Route element={<AdminLayout />}>
@@ -56,6 +69,11 @@ const AppRouter = () =>{
                     <Route path="/catalogos/create" element={<CatalogoForm />} />
                     <Route path="/catalogos/edit/:id" element={<CatalogoForm />} />
                     <Route path="/catalogos/detail/:id" element={<CatalogoDetail />} />
+                    <Route path="/dashboard/ventas" element={<VentaList/>} />
+                    <Route path="/dashboard/ventas/crear" element={<VentaForm />} />
+                    <Route path="/dashboard/ventas/:id" element={<VentaDetail />} />
+                    <Route path="/dashboard/ventas/pagar/:ventaId" element={<PagoCheckout />} />
+                    <Route path="/dashboard/pagos" element={<PagosList />} />
                     <Route path="/bitacora" element={<BitacoraPage/>} />
                 </Route>
                 {/* Redirección por defecto si la ruta no existe (opcional) */}

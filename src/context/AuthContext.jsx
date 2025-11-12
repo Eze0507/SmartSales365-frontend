@@ -81,6 +81,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user');
       setUser(null);
+      
+      // Recargar la página para limpiar el estado del carrito
+      window.location.href = '/';
     }
   };
 
